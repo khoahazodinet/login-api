@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { UserLoginDto } from '../models/login.dto';
-
+import { InjectRepository } from '@nestjs/typeorm';
+import { UserEntity } from 'src/user/models/user.entity';
+import { Repository } from 'typeorm';
+import { TokenDto, UserLoginDto } from '../models/login.dto';
+import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class LoginService {
   private dataValue = {
@@ -10,14 +13,26 @@ export class LoginService {
     password: '12345678',
     birthday: '01/01/1989',
   };
-  handleLogin(data: UserLoginDto) {
-    if (data.username !== this.dataValue.name) {
-      return 0;
+  constructor(
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+    private jwtService: JwtService,
+  ) {}
+  handleLogin(data: UserLoginDto): TokenDto {
+    if (data.UserName !== this.dataValue.name) {
+      return {} as TokenDto;
     }
-    if (data.password !== this.dataValue.password) {
-      return 0;
+    if (data.Password !== this.dataValue.password) {
+      return {} as TokenDto;
     }
+    this.userRepository.findOne(data.UserName).then(function (user) {
+      if (user && user.Password === data.Password) {
+        const payload = { UserName: data.UserName, isLogin: true };
 
-    return 1;
+        return {
+          access_token: this.jwtService.sign(payload),
+        };
+      }
+    });
   }
 }
