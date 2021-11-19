@@ -24,3 +24,4 @@ export const DbConfig: TypeOrmModuleOptions = {
     ["dist/**/models/*.entity.js"],
   synchronize: true
 };
+
