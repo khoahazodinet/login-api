@@ -4,6 +4,8 @@
 
 .env
 
+./src/db.config.ts
+
 # Logs
 logs
 *.log

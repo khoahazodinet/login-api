@@ -10,5 +10,5 @@ async function bootstrap() {
   await app.listen(4000);
 }
 bootstrap().then(()=>{
-  console.log('the server had started', process.env.PASSWORD)
+  console.log('the server had started')
 });

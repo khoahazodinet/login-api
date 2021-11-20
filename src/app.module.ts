@@ -10,8 +10,8 @@ import { DbConfig } from "./db.config";
 
 @Module({
   imports: [
-    // ConfigModule.forRoot({isGlobal: true}),
-    // TypeOrmModule.forRoot(DbConfig),
+    ConfigModule.forRoot({isGlobal: true}),
+    TypeOrmModule.forRoot(DbConfig),
     LoginModule, UserModule ],
   controllers: [AppController],
   providers: [AppService],
