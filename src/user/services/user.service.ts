@@ -1,10 +1,10 @@
 import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { UserEntity } from "../models/user.entity";
+import { UserEntity } from "../entities/user.entity";
 import { Repository, UpdateResult } from "typeorm";
 import { IUser } from "../models/user.interface";
 import { UserResponseDto } from "../models/user.dto";
-import { response, Response } from "express";
+import {getConnection} from "typeorm";
 
 @Injectable()
 export class UserService {
@@ -38,13 +38,17 @@ export class UserService {
     return res;
   }
 
-  async updateUserById(id: number, userInfo: IUser): Promise<UpdateResult> {
-    const entity = await this.userRepository.findOne(id);
-    if (!entity) throw new ForbiddenException();
-    return await this.userRepository.update(id, {
-      Name: userInfo.Name ?? entity.Name,
-      Password: userInfo.Password ?? entity.Password,
-      Birthday: userInfo.Birthday ?? entity.Birthday
-    });
+  async updateUserById(id: number, userInfo: IUser) {
+    const user = await this.userRepository.findOne(id);
+    return await getConnection()
+      .createQueryBuilder()
+      .update(UserEntity)
+      .set({
+        Name: userInfo.Name ? userInfo.Name : user.Name,
+        Birthday: userInfo.Birthday ? userInfo.Birthday : user.Birthday,
+        Password: userInfo.Password ? userInfo.Password : user.Password,
+      })
+      .where("ID = :ID", { ID: id })
+      .execute();
   }
 }

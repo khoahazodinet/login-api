@@ -5,6 +5,9 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.setGlobalPrefix('api');
+  app.enableCors();
+  app.useGlobalPipes(new ValidationPipe());
 
   const config = new DocumentBuilder()
     .setTitle('Cats example')
@@ -13,13 +16,9 @@ async function bootstrap() {
     .addTag('cats')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
-
-  app.enableCors();
-  app.useGlobalPipes(new ValidationPipe());
+  SwaggerModule.setup('swagger', app, document);
 
   await app.listen(3000);
-
 }
 bootstrap().then(()=>{
   console.log('the server had started')

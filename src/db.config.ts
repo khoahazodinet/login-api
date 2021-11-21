@@ -8,7 +8,7 @@ export const DbConfig: TypeOrmModuleOptions = {
   password: "abcd1234",
   database: "Login",
   entities:
-    ["dist/**/models/*.entity.js"],
+    ["dist/**/entities/*.entity.js"],
   synchronize: true
 };
 
@@ -21,6 +21,6 @@ export const DbConfig: TypeOrmModuleOptions = {
 //   password: process.env.PASSWORD,
 //   database: process.env.DATABASE,
 //   entities:
-//     ["dist/**/models/*.entity.js"],
+//     ["dist/**/models/*.entities.js"],
 //   synchronize: true
 // };

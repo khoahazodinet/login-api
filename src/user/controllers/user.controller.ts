@@ -1,7 +1,22 @@
-import { Body, Controller, Get, Param, Post, Put, Response } from "@nestjs/common";
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  ForbiddenException,
+  Get,
+  Param,
+  Post,
+  Put,
+  Res
+} from "@nestjs/common";
 import { UserService } from "../services/user.service";
 import { IUser } from "../models/user.interface";
-import { CreateUserDto, UpdateResponseDto, UpdateUserDto, UserResponseDto } from "../models/user.dto";
+import {
+  CreateUserDto,
+  UpdateResponseDto,
+  UpdateUserDto,
+  UserResponseDto
+} from "../models/user.dto";
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -13,7 +28,7 @@ import {
   ApiUnauthorizedResponse
 } from "@nestjs/swagger";
 import * as bcrypt from "bcrypt";
-import { Type } from "class-transformer";
+import { Response } from "express";
 
 
 @ApiTags("User")
@@ -22,32 +37,36 @@ export class UserController {
   constructor(private userServices: UserService) {
   }
 
+  // Get all
+  @Get()
   @ApiOkResponse({
-    type: UserResponseDto,
-    description: "The list of user"
+    type: UserResponseDto
   })
   @ApiNotFoundResponse({
     description: "Not found"
   })
-  @Get()
   getAllUser(): Promise<UserResponseDto[]> {
     return this.userServices.getAllId();
   }
 
+  // Get by ID
+  @Get("/:id")
   @ApiOkResponse({
+    status: 200,
     type: UserResponseDto,
     description: "The user"
   })
   @ApiNotFoundResponse({
+    type: UpdateResponseDto,
     description: "Not found"
   })
-  @Get("/:id")
   getUserById(
     @Param("id") id: number
   ): Promise<UserResponseDto> {
     return this.userServices.getUserById(id);
   }
 
+  // register
   @Post("/register")
   @ApiCreatedResponse({
     description: "The record has been successfully created.",
@@ -71,6 +90,8 @@ export class UserController {
     return this.userServices.create(user);
   }
 
+  // Update
+  @Put("/:id")
   @ApiOkResponse({
     type: UpdateResponseDto
   })
@@ -84,23 +105,36 @@ export class UserController {
     description: "Forbidden."
   })
   @ApiBody({ type: UpdateUserDto })
-  @Put("/:id")
   async updateById(
     @Param("id") id: number,
     @Body() userInfoReq: UpdateUserDto,
-    @Response() res: any
+    @Res() res: Response
   ) {
     const saltOrRounds = 10;
     const userInfo: IUser = {
       Name: userInfoReq.Name,
-      Password: userInfoReq.Password ??
+      Password: userInfoReq.Password &&
         await bcrypt.hash(userInfoReq.Password, saltOrRounds),
       Birthday: userInfoReq.Birthday
     };
-    const result = await this.userServices.updateUserById(id, userInfo)
-    if(result.affected) res.status(200).json({
+
+    // check user exists
+    const user = this.userServices.getUserById(id);
+    if (!user) {
+      throw new ForbiddenException();
+    }
+
+    // update user
+    const result = await this.userServices.updateUserById(id, userInfo);
+    if (!result.affected) {
+      throw new BadRequestException("Error");
+    }
+    res.status(200).json({
       statusCode: 200,
-      message: 'updated'
+      message: "Successful"
     });
   }
+
+  // Delete
+
 }
