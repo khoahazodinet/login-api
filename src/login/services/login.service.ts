@@ -1,38 +1,33 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from 'src/user/models/user.entity';
-import { Repository } from 'typeorm';
-import { TokenDto, UserLoginDto } from '../models/login.dto';
+import { TokenDto } from '../models/login.dto';
 import { JwtService } from '@nestjs/jwt';
+import { UserService } from 'src/user/services/user.service';
+import { IUser } from 'src/user/models/user.interface';
+
 @Injectable()
 export class LoginService {
-  private dataValue = {
-    name: 'Cuong Zodinet',
-    username: 'cuongzdn',
-    email: 'cuong@zodinet.com',
-    password: '12345678',
-    birthday: '01/01/1989',
-  };
   constructor(
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
+    private userService: UserService,
     private jwtService: JwtService,
   ) {}
-  handleLogin(data: UserLoginDto): TokenDto {
-    if (data.UserName !== this.dataValue.name) {
-      return {} as TokenDto;
-    }
-    if (data.Password !== this.dataValue.password) {
-      return {} as TokenDto;
-    }
-    this.userRepository.findOne(data.UserName).then(function (user) {
-      if (user && user.Password === data.Password) {
-        const payload = { UserName: data.UserName, isLogin: true };
 
-        return {
-          access_token: this.jwtService.sign(payload),
-        };
-      }
-    });
+  async validateUser(UserName: string, Password: string): Promise<any> {
+    const result = await this.userService.getUserByUserName(UserName);
+    if (result && result.length > 1) return null;
+
+    const user = result[0];
+
+    if (user && user.Password === Password) {
+      const { Password, ...result } = user;
+      return result;
+    }
+    return null;
+  }
+
+  handleLogin(data: IUser): TokenDto {
+    const payload = { UserName: data.UserName, sub: data.ID };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
   }
 }
