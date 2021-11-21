@@ -1,8 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 // @Entity("blog_entity")
-@Entity("user")
+@Entity('user')
 export class UserEntity {
   @PrimaryGeneratedColumn()
   ID: number;
@@ -19,8 +18,6 @@ export class UserEntity {
   @Column()
   Name: string;
 
-  @Column({ type: "timestamp" })
+  @Column({ type: 'timestamp' })
   Birthday: Date;
 }
-
-
