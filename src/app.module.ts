@@ -13,7 +13,6 @@ import { reCaptLoginModule } from './login/login.module';
     GoogleRecaptchaModule.forRoot({
       secretKey: '6LeV9k4dAAAAABLSl4Z7N7wYFDQd7zCP_SGOqhNc',
       response: req => req.body.recaptcha,
-      actions: ['login'],
       score: 0.1
     }),
     TypeOrmModule.forRoot(DbConfig),

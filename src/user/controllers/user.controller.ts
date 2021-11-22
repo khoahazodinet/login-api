@@ -53,7 +53,6 @@ export class UserController {
 
   // register
   @Post("/register")
-  @UseGuards(JwtAuthGuard)
   @ApiCreatedResponse({
     description: "The record has been successfully created.",
     type: UserResponseDto

@@ -69,6 +69,10 @@ export class UserService {
       .execute();
   }
 
+  async findOne(condition: { [key: string]: any }): Promise<IUser> {
+    return this.userRepository.findOne(condition);
+  }
+
   async getUserByUserName(userName: string) {
     return await this.userRepository.find({ UserName: userName });
   }

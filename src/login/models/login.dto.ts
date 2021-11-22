@@ -4,13 +4,15 @@ import { ApiProperty } from '@nestjs/swagger';
 export class LoginRequestDto {
 	@IsString()
 	@ApiProperty()
-	username: string;
+	userName: string;
 
 	@IsString()
 	@ApiProperty()
 	password: string;
+
+	@IsString()
+	@ApiProperty()
+	recaptcha: string;
 }
 
-export class TokenDto {
-	access_token: string;
-}
+
