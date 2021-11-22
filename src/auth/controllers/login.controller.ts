@@ -1,10 +1,9 @@
 import { Post, Controller, Request, UseGuards } from '@nestjs/common';
 import { LoginService } from '../services/login.service';
-import { TokenDto } from '../models/login.dto';
-import * as bcrypt from 'bcrypt';
+import { LoginRequestDto, TokenDto } from '../models/login.dto';
 
 import { LocalAuthGuard } from '../guards/local.auth.guard';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Auth')
 @Controller()
@@ -12,7 +11,7 @@ export class LoginController {
   constructor(private readonly loginService: LoginService) {}
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
-  // @ApiBody({ type:  {userName: }})
+  @ApiBody({ type:  LoginRequestDto})
   login(@Request() req): TokenDto {
     return this.loginService.handleLogin(req.user);
   }
