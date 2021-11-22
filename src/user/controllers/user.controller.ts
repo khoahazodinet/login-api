@@ -1,134 +1,142 @@
-/* eslint-disable prettier/prettier */
-import { Observable } from 'rxjs';
-import { UpdateResult } from 'typeorm';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
 import {
-	BadRequestException,
-	Body,
-	Controller,
-	Delete,
-	ForbiddenException,
-	Get,
-	Param,
-	Post,
-	Put,
-	Res,
-	UseGuards,
+    BadRequestException,
+    Body,
+    Controller,
+    Delete,
+    ForbiddenException,
+    Get,
+    Param,
+    Post,
+    Put,
+    Res,
+    UseGuards,
 } from '@nestjs/common';
-import { UserService } from '../services/user.service';
-import { IUser } from '../models/user.interface';
-import { CreateUserDto, UpdateResponseDto, UpdateUserDto, UserResponseDto } from '../models/user.dto';
 import {
-	ApiBadRequestResponse,
-	ApiBody,
-	ApiCreatedResponse,
-	ApiForbiddenResponse,
-	ApiNotFoundResponse,
-	ApiOkResponse,
-	ApiTags,
-	ApiUnauthorizedResponse,
+    ApiBadRequestResponse,
+    ApiBody,
+    ApiCreatedResponse,
+    ApiForbiddenResponse,
+    ApiNotFoundResponse,
+    ApiOkResponse,
+    ApiTags,
+    ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { CreateUserDto, UpdateUserDto } from '../models/user.dto';
+import { IUser } from '../models/user.interface';
+import { UserService } from '../services/user.service';
 
 @ApiTags('User')
 @Controller('user')
 export class UserController {
-	constructor(private userServices: UserService) {}
+    constructor(private userServices: UserService) {}
 
-	// Get all
-	@Get()
-	@ApiOkResponse({
-		type: UserResponseDto,
-	})
-	@ApiNotFoundResponse({
-		description: 'Not found',
-	})
-	getAllUser(): Promise<UserResponseDto[]> {
-		return this.userServices.getAllId();
-	}
+    // Get all
+    @Get()
+    @UseGuards(JwtAuthGuard)
+    @ApiOkResponse({
+        // type: UserResponseDto,
+    })
+    @ApiNotFoundResponse({
+        description: 'Not found',
+    })
+    getAllUser(): Promise<IUser[]> {
+        return this.userServices.getAllId();
+    }
 
-	// Get by ID
-	@Get('/:id')
-	@ApiOkResponse({
-		status: 200,
-		type: UserResponseDto,
-		description: 'The user',
-	})
-	@ApiNotFoundResponse({
-		type: UpdateResponseDto,
-		description: 'Not found',
-	})
-	getUserById(@Param('id') id: number): Promise<UserResponseDto> {
-		return this.userServices.getUserById(id);
-	}
+    // Get by ID
+    @Get('/:id')
+    @UseGuards(JwtAuthGuard)
+    @ApiOkResponse({
+        status: 200,
+        // type: UserResponseDto,
+        description: 'The user',
+    })
+    @ApiNotFoundResponse({
+        // type: UpdateResponseDto,
+        description: 'Not found',
+    })
+    getUserById(@Param('id') id: number): Promise<IUser> {
+        return this.userServices.getUserById(id);
+    }
 
-	// register
-	@Post('/register')
-	@ApiCreatedResponse({
-		description: 'The record has been successfully created.',
-		type: UserResponseDto,
-	})
-	@ApiForbiddenResponse({
-		description: 'Forbidden.',
-	})
-	@ApiBody({ type: CreateUserDto })
-	async createUser(@Body() userReq: CreateUserDto): Promise<UserResponseDto> {
-		const saltOrRounds = 10;
-		const user: IUser = {
-			Email: userReq.Email,
-			Name: userReq.Name,
-			UserName: userReq.UserName,
-			Password: await bcrypt.hash(userReq.Password, saltOrRounds),
-			Birthday: userReq.Birthday,
-		};
-		return this.userServices.create(user);
-	}
+    // register
+    @Post('/register')
+    @UseGuards(JwtAuthGuard)
+    @ApiCreatedResponse({
+        description: 'The record has been successfully created.',
+        // type: UserResponseDto,
+    })
+    @ApiForbiddenResponse({
+        description: 'Forbidden.',
+    })
+    @ApiBody({ type: CreateUserDto })
+    async createUser(@Body() userReq: CreateUserDto): Promise<IUser> {
+        const saltOrRounds = 10;
+        const user: IUser = {
+            Email: userReq.email,
+            Name: userReq.name,
+            UserName: userReq.userName,
+            Password: await bcrypt.hash(userReq.password, saltOrRounds),
+            Birthday: userReq.birthday,
+        };
+        return this.userServices.create(user);
+    }
 
-	// Update
-	@Put('/:id')
-	@ApiOkResponse({
-		type: UpdateResponseDto,
-	})
-	@ApiUnauthorizedResponse({
-		description: 'Unauthorized',
-	})
-	@ApiBadRequestResponse({
-		description: 'Bad request',
-	})
-	@ApiForbiddenResponse({
-		description: 'Forbidden.',
-	})
-	@ApiBody({ type: UpdateUserDto })
-	async updateById(@Param('id') id: number, @Body() userInfoReq: UpdateUserDto, @Res() res: Response) {
-		const saltOrRounds = 10;
-		const userInfo: IUser = {
-			Name: userInfoReq.Name,
-			Password: userInfoReq.Password && (await bcrypt.hash(userInfoReq.Password, saltOrRounds)),
-			Birthday: userInfoReq.Birthday,
-		};
+    // Update
+    @Put('/:id')
+    @UseGuards(JwtAuthGuard)
+    @ApiOkResponse({
+        // type: UpdateResponseDto,
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Unauthorized',
+    })
+    @ApiBadRequestResponse({
+        description: 'Bad request',
+    })
+    @ApiForbiddenResponse({
+        description: 'Forbidden.',
+    })
+    @ApiBody({ type: UpdateUserDto })
+    async updateById(
+        @Param('id') id: number,
+        @Body() userInfoReq: UpdateUserDto,
+        @Res() res: Response,
+    ) {
+        const saltOrRounds = 10;
+        const userInfo: IUser = {
+            Name: userInfoReq.name,
+            Password:
+                userInfoReq.password &&
+                (await bcrypt.hash(userInfoReq.password, saltOrRounds)),
+            Birthday: userInfoReq.birthday,
+        };
+        console.log(userInfo);
 
-		// check user exists
-		const user = this.userServices.getUserById(id);
-		if (!user) {
-			throw new ForbiddenException();
-		}
+        // check user exists
+        const user = this.userServices.getUserById(id);
+        if (!user) {
+            throw new ForbiddenException();
+        }
 
-		// update user
-		const result = await this.userServices.updateUserById(id, userInfo);
-		if (!result.affected) {
-			throw new BadRequestException('Error');
-		}
-		res.status(200).json({
-			statusCode: 200,
-			message: 'Successful',
-		});
-	}
+        // update user
+        const result = await this.userServices.updateUserById(id, userInfo);
+        if (!result.affected) {
+            throw new BadRequestException('Error');
+        }
+        res.status(200).json({
+            statusCode: 200,
+            message: 'Successful',
+        });
+    }
 
-	// Delete
-	@UseGuards(JwtAuthGuard)
-	@Delete('/:id')
-	delete(@Param() param: { id: number }) {
-		return this.userServices.deleteUserById(param.id);
-	}
+    // Delete
+    @Delete('/:id')
+    @UseGuards(JwtAuthGuard)
+    delete(@Param() param: { id: number }) {
+        return this.userServices.deleteUserById(param.id);
+    }
 }

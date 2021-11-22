@@ -3,16 +3,19 @@ import { LoginService } from '../services/login.service';
 import { TokenDto } from '../models/login.dto';
 import * as bcrypt from 'bcrypt';
 
-// import { AuthGuard } from '@nestjs/passport';
 import { LocalAuthGuard } from '../guards/local.auth.guard';
+import { ApiTags } from '@nestjs/swagger';
+
+@ApiTags('Auth')
 @Controller()
 export class LoginController {
-	constructor(private readonly loginService: LoginService) {}
-	@UseGuards(LocalAuthGuard)
-	@Post('auth/login')
-	login(@Request() req): TokenDto {
-		return this.loginService.handleLogin(req.user);
-	}
+  constructor(private readonly loginService: LoginService) {}
+  @UseGuards(LocalAuthGuard)
+  @Post('auth/login')
+  // @ApiBody({ type:  {userName: }})
+  login(@Request() req): TokenDto {
+    return this.loginService.handleLogin(req.user);
+  }
 }
 
 // import { BadRequestException, Body, Controller, Post, Res } from '@nestjs/common';

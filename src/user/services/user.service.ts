@@ -18,7 +18,7 @@ export class UserService {
 		private readonly userRepository: Repository<UserEntity>
 	) {}
 
-	async getAllId(): Promise<UserResponseDto[]> {
+	async getAllId(): Promise<IUser[]> {
 		const users = await this.userRepository.find();
 		if (!users) throw new NotFoundException();
 		return users.map((user) => {
@@ -27,14 +27,14 @@ export class UserService {
 		});
 	}
 
-	async getUserById(id: number): Promise<UserResponseDto | undefined> {
+	async getUserById(id: number): Promise<IUser | undefined> {
 		const user = await this.userRepository.findOne(id);
 		if (!user) throw new NotFoundException();
 		const { ID, Password, ...res } = user;
 		return res;
 	}
 
-	async create(newUser: IUser): Promise<UserResponseDto> {
+	async create(newUser: IUser): Promise<IUser> {
 		const user = await this.userRepository.save(newUser);
 		if (!user) throw new ForbiddenException();
 		const { ID, Password, ...res } = user;

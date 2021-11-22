@@ -1,46 +1,46 @@
-import { IsEmail, IsNotEmpty, IsString, Length, Max, ValidateIf } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsNotEmpty, IsString, Length, ValidateIf } from 'class-validator';
 
 export class CreateUserDto {
 	@IsEmail()
 	@IsNotEmpty()
 	@Length(1, 50)
 	@ApiProperty()
-	Email: string;
+	email: string;
 
 	@IsNotEmpty()
 	@Length(1, 50)
 	@ApiProperty()
-	Name: string;
+	name: string;
 
 	@IsNotEmpty()
 	@Length(1, 50)
 	@ApiProperty()
-	UserName: string;
+	userName: string;
 
 	@ApiProperty()
-	Birthday: Date;
+	birthday: Date;
 
 	@IsNotEmpty()
 	@Length(1, 50)
 	@ApiProperty()
-	Password: string;
+	password: string;
 }
 
 export class UpdateUserDto {
 	@IsString()
 	@ApiProperty()
 	@ValidateIf((object, value) => value === null)
-	Name!: string | null;
+	name!: string | null;
 
 	@ApiProperty()
 	@ValidateIf((object, value) => value === null)
-	Birthday!: Date | null;
+	birthday!: Date | null;
 
 	@IsString()
 	@ValidateIf((object, value) => value === null)
 	@ApiProperty()
-	Password!: string | null;
+	password!: string | null;
 }
 
 export class UpdateResponseDto {
@@ -59,19 +59,19 @@ export class UpdateResponseDto {
 export class UserResponseDto {
 	@Length(1, 50)
 	@ApiProperty()
-	Email: string;
+	email: string;
 
 	@IsNotEmpty()
 	@Length(1, 50)
 	@ApiProperty()
-	Name: string;
+	name: string;
 
 	@IsNotEmpty()
 	@Length(1, 50)
 	@ApiProperty()
-	UserName: string;
+	userName: string;
 
 	@Length(1, 50)
 	@ApiProperty()
-	Birthday: Date;
+	birthday: Date;
 }
