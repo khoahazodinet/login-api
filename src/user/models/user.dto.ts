@@ -1,81 +1,77 @@
-import { IsEmail, IsNotEmpty, IsString, Length, Max, ValidateIf } from "class-validator";
-import { ApiProperty } from "@nestjs/swagger";
-
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsNotEmpty, IsString, Length, ValidateIf } from 'class-validator';
 
 export class CreateUserDto {
-  @IsEmail()
-  @IsNotEmpty()
-  @Length(1, 50)
-  @ApiProperty()
-  Email: string;
+	@IsEmail()
+	@IsNotEmpty()
+	@Length(1, 50)
+	@ApiProperty()
+	email: string;
 
-  @IsNotEmpty()
-  @Length(1, 50)
-  @ApiProperty()
-  Name: string;
+	@IsNotEmpty()
+	@Length(1, 50)
+	@ApiProperty()
+	name: string;
 
-  @IsNotEmpty()
-  @Length(1, 50)
-  @ApiProperty()
-  UserName: string;
+	@IsNotEmpty()
+	@Length(1, 50)
+	@ApiProperty()
+	userName: string;
 
-  @ApiProperty()
-  Birthday: Date;
+	@ApiProperty()
+	birthday: Date;
 
-  @IsNotEmpty()
-  @Length(1, 50)
-  @ApiProperty()
-  Password: string;
+	@IsNotEmpty()
+	@Length(1, 50)
+	@ApiProperty()
+	password: string;
 }
 
 export class UpdateUserDto {
-  @IsString()
-  @ApiProperty()
-  @ValidateIf((object, value) => value === null)
-  Name!: string | null;
+	@IsString()
+	@ApiProperty()
+	@ValidateIf((object, value) => value === null)
+	name!: string | null;
 
-  @ApiProperty()
-  @ValidateIf((object, value) => value === null)
-  Birthday!: Date | null;
+	@ApiProperty()
+	@ValidateIf((object, value) => value === null)
+	birthday!: Date | null;
 
-  @IsString()
-  @ValidateIf((object, value) => value === null)
-  @ApiProperty()
-  Password!: string | null;
+	@IsString()
+	@ValidateIf((object, value) => value === null)
+	@ApiProperty()
+	password!: string | null;
 }
 
-export class UpdateResponseDto{
-  constructor(status: number, message: string) {
-    this.statusCode = status;
-    this.message= message;
-  }
+export class UpdateResponseDto {
+	constructor(status: number, message: string) {
+		this.statusCode = status;
+		this.message = message;
+	}
 
-  @ApiProperty({default: 200})
-  statusCode: number;
+	@ApiProperty({ default: 200 })
+	statusCode: number;
 
-  @ApiProperty({default: 'Successfully'})
-  message: string;
+	@ApiProperty({ default: 'Successfully' })
+	message: string;
 }
 
 export class UserResponseDto {
-  @Length(1, 50)
-  @ApiProperty()
-  Email: string;
+	@Length(1, 50)
+	@ApiProperty()
+	email: string;
 
-  @IsNotEmpty()
-  @Length(1, 50)
-  @ApiProperty()
-  Name: string;
+	@IsNotEmpty()
+	@Length(1, 50)
+	@ApiProperty()
+	name: string;
 
-  @IsNotEmpty()
-  @Length(1, 50)
-  @ApiProperty()
-  UserName: string;
+	@IsNotEmpty()
+	@Length(1, 50)
+	@ApiProperty()
+	userName: string;
 
-  @Length(1, 50)
-  @ApiProperty()
-  Birthday: Date;
+	@Length(1, 50)
+	@ApiProperty()
+	birthday: Date;
 }
-
-
-
