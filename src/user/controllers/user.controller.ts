@@ -1,8 +1,10 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+// eslint-disable-next-line prettier/prettier
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { IUser } from '../models/user.interface';
 import { Observable } from 'rxjs';
 import { UpdateResult } from 'typeorm';
+import { JwtAuthGuard } from 'src/login/guards/jwt.auth.guard';
 
 @Controller('user')
 export class UserController {
@@ -24,10 +26,13 @@ export class UserController {
   }
 
   @Put('/:id')
-  updateById(
-    @Param() param: { id: number },
-    @Body() userInfo: IUser,
-  ): Observable<UpdateResult> {
+  // eslint-disable-next-line prettier/prettier
+  updateById(@Param() param: { id: number }, @Body() userInfo: IUser): Observable<UpdateResult> {
     return this.userServices.updateUserById(param.id, userInfo);
+  }
+  @UseGuards(JwtAuthGuard)
+  @Delete('/:id')
+  delete(@Param() param: { id: number }) {
+    return this.userServices.deleteUserById(param.id);
   }
 }

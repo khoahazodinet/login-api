@@ -32,4 +32,8 @@ export class UserService {
     const result = await this.userRepository.find({ UserName: userName });
     return result;
   }
+
+  async deleteUserById(id: number): Promise<void> {
+    await this.userRepository.delete({ ID: id });
+  }
 }
