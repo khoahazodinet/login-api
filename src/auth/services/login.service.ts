@@ -3,6 +3,7 @@ import { TokenDto } from '../models/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/services/user.service';
 import { IUser } from 'src/user/models/user.interface';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class LoginService {
@@ -14,7 +15,7 @@ export class LoginService {
 
 		const user = result[0];
 
-		if (user && user.Password === Password) {
+		if (user && await bcrypt.compare(Password, user.Password)) {
 			const { Password, ...result } = user;
 			return result;
 		}

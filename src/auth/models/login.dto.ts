@@ -4,7 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 export class LoginRequestDto {
 	@IsString()
 	@ApiProperty()
-	userName: string;
+	username: string;
 
 	@IsString()
 	@ApiProperty()
