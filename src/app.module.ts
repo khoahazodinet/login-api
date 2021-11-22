@@ -17,4 +17,5 @@ import { DbConfig } from './db.config';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+}

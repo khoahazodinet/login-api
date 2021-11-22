@@ -1,23 +1,77 @@
-import { IsNotEmpty, Length, IsEmail } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, Length, Max, ValidateIf } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDto {
-  @IsEmail()
-  @IsNotEmpty()
-  @Length(1, 50)
-  email: string;
+	@IsEmail()
+	@IsNotEmpty()
+	@Length(1, 50)
+	@ApiProperty()
+	Email: string;
 
-  @IsNotEmpty()
-  @Length(0, 50)
-  name: string;
+	@IsNotEmpty()
+	@Length(1, 50)
+	@ApiProperty()
+	Name: string;
 
-  @IsNotEmpty()
-  @Length(0, 50)
-  userName: string;
+	@IsNotEmpty()
+	@Length(1, 50)
+	@ApiProperty()
+	UserName: string;
 
-  @Length(0, 50)
-  birthday: string;
+	@ApiProperty()
+	Birthday: Date;
 
-  @IsNotEmpty()
-  @Length(0, 50)
-  password: string;
+	@IsNotEmpty()
+	@Length(1, 50)
+	@ApiProperty()
+	Password: string;
+}
+
+export class UpdateUserDto {
+	@IsString()
+	@ApiProperty()
+	@ValidateIf((object, value) => value === null)
+	Name!: string | null;
+
+	@ApiProperty()
+	@ValidateIf((object, value) => value === null)
+	Birthday!: Date | null;
+
+	@IsString()
+	@ValidateIf((object, value) => value === null)
+	@ApiProperty()
+	Password!: string | null;
+}
+
+export class UpdateResponseDto {
+	constructor(status: number, message: string) {
+		this.statusCode = status;
+		this.message = message;
+	}
+
+	@ApiProperty({ default: 200 })
+	statusCode: number;
+
+	@ApiProperty({ default: 'Successfully' })
+	message: string;
+}
+
+export class UserResponseDto {
+	@Length(1, 50)
+	@ApiProperty()
+	Email: string;
+
+	@IsNotEmpty()
+	@Length(1, 50)
+	@ApiProperty()
+	Name: string;
+
+	@IsNotEmpty()
+	@Length(1, 50)
+	@ApiProperty()
+	UserName: string;
+
+	@Length(1, 50)
+	@ApiProperty()
+	Birthday: Date;
 }
