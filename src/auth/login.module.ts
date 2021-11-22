@@ -1,9 +1,6 @@
-/* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/services/user.service';
 import { UserModule } from 'src/user/user.module';
 import { jwtConstants } from './constant';
@@ -14,7 +11,6 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
 	imports: [
-		TypeOrmModule.forFeature([UserEntity]),
 		UserModule,
 		PassportModule,
 		JwtModule.register({
@@ -27,23 +23,3 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 })
 export class LoginModule {}
 
-// import { Module } from '@nestjs/common';
-// import { LoginController } from './controllers/login.controller';
-// import { LoginService } from './services/login.service';
-// import { UserModule } from '../user/user.module';
-// import { JwtModule } from '@nestjs/jwt';
-// import { ConfigModule } from '@nestjs/config';
-
-// @Module({
-// 	imports: [
-// 		UserModule,
-// 		JwtModule.register({
-// 			secret: 'abcd',
-// 			signOptions: { expiresIn: '60s' },
-// 		}),
-// 		ConfigModule,
-// 	],
-// 	controllers: [LoginController],
-// 	providers: [LoginService],
-// })
-// export class LoginModule {}
