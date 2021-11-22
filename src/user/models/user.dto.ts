@@ -44,11 +44,6 @@ export class UpdateUserDto {
 }
 
 export class UpdateResponseDto {
-	constructor(status: number, message: string) {
-		this.statusCode = status;
-		this.message = message;
-	}
-
 	@ApiProperty({ default: 200 })
 	statusCode: number;
 

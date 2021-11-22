@@ -5,9 +5,8 @@ export const DbConfig: TypeOrmModuleOptions = {
   host: 'localhost',
   port: 5432,
   username: 'postgres',
-  password: '123456',
+  password: 'abcd1234',
   database: 'Login',
-  // entities: ['dist/**/models/*.entity.js'],
   entities: ['dist/**/entities/*.entity.js'],
   synchronize: true,
 };
