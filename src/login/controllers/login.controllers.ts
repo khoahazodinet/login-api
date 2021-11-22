@@ -1,6 +1,6 @@
 import { Post, Controller, Body } from "@nestjs/common";
 import { LoginService } from '../services/login.service';
-import { LoginRequestDto } from '../models/login.dto';
+import { LoginRequestDto, LoginResponseDto } from "../models/login.dto";
 
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { Recaptcha } from '@nestlab/google-recaptcha';
@@ -14,7 +14,7 @@ export class LoginController {
   @Recaptcha()
   @Post('recaptcha/login')
   @ApiBody({ type:  LoginRequestDto})
-  login(@Body() bodyReq: LoginRequestDto) {
+  login(@Body() bodyReq: LoginRequestDto): Promise<LoginResponseDto> {
     const body: ILogin = {
       UserName: bodyReq.userName,
       Password: bodyReq.password

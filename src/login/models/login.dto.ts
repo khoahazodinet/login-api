@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsNumber, IsString } from "class-validator";
 import { ApiProperty } from '@nestjs/swagger';
 
 export class LoginRequestDto {
@@ -15,4 +15,12 @@ export class LoginRequestDto {
 	recaptcha: string;
 }
 
+export class LoginResponseDto{
+	@IsNumber()
+	@ApiProperty()
+	statusCode: number;
 
+	@IsString()
+	@ApiProperty()
+	accessToken: string;
+}

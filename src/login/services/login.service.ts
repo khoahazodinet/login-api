@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/services/user.service';
 import { IUser } from 'src/user/models/user.interface';
 import * as bcrypt from 'bcrypt';
+import { LoginResponseDto } from "../models/login.dto";
 
 @Injectable()
 export class LoginService {
@@ -25,7 +26,7 @@ export class LoginService {
 		}
 	}
 
-	async handleLogin(data: IUser) {
+	async handleLogin(data: IUser): Promise<LoginResponseDto> {
 		const user = await this.userService.findOne({UserName: data.UserName})
 		if(!user) throw new BadRequestException('Wrong user');
 
@@ -35,7 +36,8 @@ export class LoginService {
 
 		const payload = { UserName: data.UserName, sub: data.ID };
 		return {
-			access_token: this.jwtService.sign(payload),
+			statusCode: 200,
+			accessToken: this.jwtService.sign(payload),
 		};
 	}
 }
